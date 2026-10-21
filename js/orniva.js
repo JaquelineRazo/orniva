@@ -1,4 +1,4 @@
-// ORNIVA — hero video (NOVI builds a website) and reveal-on-scroll.
+// ORNIVA — hero video (NOVI builds a website, looping) and reveal-on-scroll.
 (function () {
 	var video = document.querySelector('[data-novi-hero]');
 	if (!video) { return; }
@@ -30,16 +30,11 @@
 		}
 	}
 
-	// The video holds its last frame when it ends; then offer a replay.
-	video.addEventListener('ended', function () {
-		video.setAttribute('poster', endPoster);
-		replay.hidden = false;
-	});
-
+	// The hero loops. The button only appears if the browser blocks
+	// autoplay, and starts the loop on tap.
 	replay.addEventListener('click', function () {
 		replay.hidden = true;
 		if (!video.src) { video.src = src; }
-		video.currentTime = 0;
 		video.play();
 	});
 
