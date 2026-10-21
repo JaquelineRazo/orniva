@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page not found | ORNIVA</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@1&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/orniva.css" />
+    <style>
+        .lost { min-height: 100vh; display: grid; place-items: center; padding: 40px 20px; background: var(--stage); text-align: center; }
+        .lost img { width: min(320px, 70vw); height: auto; animation: bob 3s ease-in-out infinite; }
+        .lost h1 { margin-top: 10px; font: 800 clamp(36px, 6vw, 60px)/1.05 var(--display); }
+        .lost p { margin: 14px auto 28px; max-width: 420px; font-size: 18px; color: var(--ink-soft); }
+        @keyframes bob { 50% { transform: translateY(-10px) rotate(-2deg); } }
+        @media (prefers-reduced-motion: reduce) { .lost img { animation: none; } }
+    </style>
+</head>
+<body>
+    <main class="lost">
+        <div>
+            <img src="/assets/novi/novi-searching.webp" alt="NOVI searching for the missing page" width="320" height="267">
+            <h1>NOVI looked <em>everywhere</em>.</h1>
+            <p>This page doesn't exist, but your next website could.</p>
+            <a class="btn btn--orange" href="/">Back to home</a>
+        </div>
+    </main>
+</body>
+</html>
