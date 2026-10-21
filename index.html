@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ORNIVA | Digital growth studio: websites, CRM, data &amp; content</title>
+    <meta name="description" content="ORNIVA builds websites, CRM, first-party data and creative content that work together to bring in leads, follow up automatically and grow an audience you own. Websites from $2,500, live in one week." />
+    <meta name="theme-color" content="#F2E6DE" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@1&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <script>document.documentElement.className += ' js';</script>
+    <link rel="stylesheet" href="css/orniva.css" />
+</head>
+<body>
+
+    <header class="nav">
+        <div class="wrap nav-inner">
+            <a class="logo" href="#top" aria-label="ORNIVA, home">ORNIVA</a>
+            <nav class="nav-links" aria-label="Main">
+                <a href="#what">What we do</a>
+                <a href="#data">Data</a>
+                <a href="#content">Content</a>
+                <a href="#packages">Packages</a>
+                <a href="#work">Work</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+            <a class="btn btn--ink btn--sm" href="https://tidycal.com/jaquelinerazzo/20-minute-meeting" target="_blank" rel="noopener">Book a call</a>
+        </div>
+    </header>
+
+    <main id="top">
+
+        <!-- 1. Hero: NOVI builds a website (video plays once, then holds the final frame). -->
+        <section class="hero">
+            <div class="wrap hero-grid">
+                <div class="hero-copy">
+                    <p class="eyebrow"><i class="spark" aria-hidden="true"></i>Digital growth studio</p>
+                    <h1>Turn attention into <em>booked</em> clients.</h1>
+                    <p class="tagline"><span>Get seen.</span> <span>Get chosen.</span> <span>Get booked.</span></p>
+                    <p class="hero-sub">ORNIVA builds the websites, CRM, data and content that work together to bring in leads, follow up automatically and grow an audience you own.</p>
+                    <div class="hero-actions">
+                        <a class="btn btn--orange" href="#packages">See packages</a>
+                        <a class="btn btn--line" href="https://tidycal.com/jaquelinerazzo/20-minute-meeting" target="_blank" rel="noopener">Book a call</a>
+                    </div>
+                    <p class="hero-micro">Websites from $2,500 &middot; Live in one week from brief sign-off</p>
+                </div>
+
+                <figure class="stage" data-stage>
+                    <video class="stage-video" data-novi-hero muted playsinline preload="none"
+                        poster="assets/novi/novi-hero-start.jpg"
+                        data-src-desktop="assets/novi/novi-hero.mp4"
+                        data-src-mobile="assets/novi/novi-hero-mobile.mp4"
+                        data-poster-end="assets/novi/novi-hero-end.jpg"
+                        aria-label="NOVI, the ORNIVA builder, assembles a website."></video>
+                    <button type="button" class="stage-replay" data-replay hidden>
+                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10a6 6 0 1 0 2-4.5M4 3v3h3"/></svg>
+                        Replay
+                    </button>
+                    <figcaption class="stage-caption">Meet NOVI, our digital builder.</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- 6. Packages -->
+        <section class="section" id="packages">
+            <div class="wrap">
+                <p class="eyebrow">Packages</p>
+                <h2>Clear packages. <em>Prices</em> up front.</h2>
+
+                <div class="packages">
+                    <article class="package reveal">
+                        <h3>Launch</h3>
+                        <p class="price"><span>From</span> $2,500</p>
+                        <p class="package-lead">A website built to convert, live in one week from brief sign-off.</p>
+                        <ul class="ticks">
+                            <li>Up to 6 pages</li><li>Copywriting</li><li>Mobile-first design</li><li>SEO basics</li><li>Lead form &amp; booking</li><li>Analytics</li>
+                        </ul>
+                        <a class="btn btn--line btn--block" href="#contact" data-package="launch">Start with Launch</a>
+                    </article>
+
+                    <article class="package package--featured reveal">
+                        <span class="badge">Most popular</span>
+                        <img class="package-novi" src="assets/novi/novi-thumbs-up.webp" alt="" width="140" height="140" loading="lazy">
+                        <h3>Growth System</h3>
+                        <p class="price"><span>From</span> $4,500 <small>+ $300/mo</small></p>
+                        <p class="package-lead">Website, CRM, data and follow-up as one system.</p>
+                        <ul class="ticks">
+                            <li>Everything in Launch</li><li>CRM setup</li><li>Lead magnet</li><li>Automated email &amp; SMS follow-up</li><li>Monthly report</li><li>Care &amp; updates</li>
+                        </ul>
+                        <a class="btn btn--orange btn--block" href="#contact" data-package="growth">Start with Growth</a>
+                    </article>
+
+                    <article class="package reveal">
+                        <h3>Content Studio</h3>
+                        <p class="price price--quote">Custom quote</p>
+                        <p class="package-lead">Fresh content every month.</p>
+                        <ul class="ticks">
+                            <li>Images &amp; short videos</li><li>Voiceovers</li><li>Social &amp; ad formats</li><li>Creative direction</li>
+                        </ul>
+                        <a class="btn btn--line btn--block" href="#contact" data-package="content">Request a quote</a>
+                    </article>
+                </div>
+
+                <div class="addon reveal">
+                    <span class="addon-tag">Add-on</span>
+                    <p><strong>E-commerce &amp; payments:</strong> online stores, subscriptions and digital products. Custom quote.</p>
+                </div>
+                <p class="note">Every project starts with a free 20-minute call. You'll get a written quote before anything starts.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/orniva.js" defer></script>
+</body>
+</html>

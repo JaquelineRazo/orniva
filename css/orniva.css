@@ -1,0 +1,342 @@
+/* ORNIVA — digital growth studio.
+   Palette sampled from the NOVI storyboard (razzo-strategy/04_digital-growth,
+   BRIEF §E): cream base, plum ink, violet, orange, aqua. Outfit for headings
+   (matches the wordmark), Instrument Serif italic for one accent word per
+   section, Inter for text. */
+
+:root {
+	--bg: #F9F1E7;
+	--stage: #F2E6DE;        /* matches the hero video background */
+	--cream: #F1DFCF;
+	--ink: #2E2140;
+	--ink-soft: #5A4D6B;
+	--violet: #805CD9;
+	--violet-text: #6544C2;  /* AA on cream for small text */
+	--orange: #FE7730;
+	--aqua: #5BDED8;
+	--white: #FFFFFF;
+	--display: 'Outfit', system-ui, sans-serif;
+	--serif: 'Instrument Serif', Georgia, serif;
+	--text: 'Inter', system-ui, sans-serif;
+	--radius: 20px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+	font-family: var(--text);
+	font-size: 16px;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p { margin: 0; }
+:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; border-radius: 6px; }
+
+.wrap { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+
+/* ---------- Buttons ---------- */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-height: 50px;
+	padding: 12px 26px;
+	border-radius: 999px;
+	border: 2px solid transparent;
+	font-family: var(--display);
+	font-weight: 600;
+	font-size: 16px;
+	transition: transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1), box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.btn:hover { transform: translateY(-2px) scale(1.02); }
+.btn:active { transform: translateY(0) scale(0.98); }
+
+.btn--orange { background: var(--orange); color: var(--ink); box-shadow: 0 6px 0 #C4521A; }
+.btn--orange:hover { box-shadow: 0 8px 0 #C4521A; }
+.btn--ink { background: var(--ink); color: var(--white); }
+.btn--line { border-color: var(--ink); color: var(--ink); }
+.btn--line:hover { background: var(--ink); color: var(--white); }
+.btn--sm { min-height: 42px; padding: 8px 18px; font-size: 15px; }
+.btn--block { width: 100%; }
+
+/* ---------- Eyebrow ---------- */
+.eyebrow {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	font-family: var(--display);
+	font-weight: 600;
+	font-size: 13px;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	color: var(--violet-text);
+}
+
+/* Little four-point spark, NOVI's "aha" mark. */
+.spark {
+	width: 14px;
+	height: 14px;
+	background: var(--orange);
+	clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+	animation: twinkle 2.4s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+	0%, 100% { transform: scale(1) rotate(0); }
+	50% { transform: scale(1.25) rotate(45deg); }
+}
+
+em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--violet); }
+
+/* ---------- Nav ---------- */
+.nav {
+	position: sticky;
+	top: 0;
+	z-index: 20;
+	background: rgba(242, 230, 222, 0.85);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	border-bottom: 1px solid rgba(46, 33, 64, 0.08);
+}
+
+.nav-inner { display: flex; align-items: center; gap: 28px; height: 72px; }
+.logo { font-family: var(--display); font-weight: 800; font-size: 24px; letter-spacing: 0.04em; }
+.nav-links { display: flex; gap: 24px; margin-left: auto; font-size: 15px; font-weight: 500; color: var(--ink-soft); }
+.nav-links a:hover { color: var(--ink); }
+
+/* ---------- Hero ---------- */
+.hero {
+	position: relative;
+	overflow: hidden;
+	padding: 64px 0 88px;
+	background: var(--stage);
+}
+
+.hero-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+	gap: 40px;
+	align-items: center;
+}
+
+.hero h1 {
+	margin-top: 20px;
+	font-family: var(--display);
+	font-weight: 800;
+	font-size: clamp(42px, 5.2vw, 72px);
+	line-height: 1.02;
+	letter-spacing: -0.02em;
+}
+
+.hero h1 em { font-size: 1.08em; letter-spacing: 0; }
+
+.tagline {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 14px;
+	margin-top: 20px;
+	font-family: var(--display);
+	font-weight: 700;
+	font-size: clamp(18px, 1.6vw, 22px);
+}
+
+/* The three beats land one after another. */
+.tagline span { display: inline-block; animation: beat 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+.tagline span:nth-child(1) { animation-delay: 0.3s; }
+.tagline span:nth-child(2) { animation-delay: 0.55s; color: var(--violet-text); }
+.tagline span:nth-child(3) { animation-delay: 0.8s; color: #C4521A; }
+
+@keyframes beat {
+	from { opacity: 0; transform: translateY(14px) scale(0.9); }
+	to { opacity: 1; transform: none; }
+}
+
+.hero-sub { max-width: 500px; margin-top: 18px; font-size: 18px; color: var(--ink-soft); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+.hero-micro { margin-top: 16px; font-size: 13.5px; color: var(--ink-soft); }
+
+/* Stage: the video's own background matches --stage; a soft mask fades its
+   edges so the scene melts into the page instead of reading as a box. */
+.stage { position: relative; margin: 0; }
+
+.stage-video {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 9;
+	background: var(--stage) center / cover no-repeat;
+	-webkit-mask-image: radial-gradient(ellipse 58% 62% at 50% 50%, #000 72%, transparent 100%);
+	mask-image: radial-gradient(ellipse 58% 62% at 50% 50%, #000 72%, transparent 100%);
+}
+
+.stage-replay {
+	position: absolute;
+	right: 8%;
+	bottom: 10%;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 14px;
+	border: 0;
+	border-radius: 999px;
+	background: rgba(46, 33, 64, 0.85);
+	color: var(--white);
+	font: 600 13px var(--display);
+	cursor: pointer;
+	animation: beat 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+.stage-replay svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.stage-replay[hidden] { display: none; }
+
+.stage-caption {
+	margin-top: -8px;
+	text-align: center;
+	font-family: var(--serif);
+	font-style: italic;
+	font-size: 20px;
+	color: var(--ink-soft);
+}
+
+/* ---------- Sections ---------- */
+.section { padding: 112px 0; }
+
+.section h2 {
+	margin-top: 14px;
+	font-family: var(--display);
+	font-weight: 800;
+	font-size: clamp(34px, 4vw, 54px);
+	line-height: 1.05;
+	letter-spacing: -0.02em;
+}
+
+.reveal { transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.js .reveal:not(.is-in) { opacity: 0; transform: translateY(24px); }
+
+/* ---------- Packages ---------- */
+.packages {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 22px;
+	margin-top: 56px;
+	align-items: stretch;
+}
+
+.package {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: 34px 30px 30px;
+	border-radius: var(--radius);
+	background: var(--white);
+	border: 2px solid rgba(46, 33, 64, 0.08);
+	transition: transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 0.4s ease, opacity 0.7s ease;
+}
+
+.package:hover { transform: translateY(-6px) rotate(-0.4deg); box-shadow: 0 30px 50px -30px rgba(46, 33, 64, 0.35); }
+.package:nth-child(2) { transition-delay: 0.08s; }
+.package:nth-child(3) { transition-delay: 0.16s; }
+
+.package--featured { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.package--featured:hover { transform: translateY(-6px) rotate(0.4deg); }
+
+.badge {
+	position: absolute;
+	top: -14px;
+	left: 30px;
+	padding: 5px 14px;
+	border-radius: 999px;
+	background: var(--aqua);
+	color: var(--ink);
+	font: 700 12px var(--display);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+/* NOVI peeks over the featured card. */
+.package-novi {
+	position: absolute;
+	right: -18px;
+	top: -78px;
+	width: 140px;
+	height: auto;
+	transform: rotate(6deg);
+	transition: transform 0.5s cubic-bezier(0.3, 1.6, 0.5, 1);
+	pointer-events: none;
+}
+
+.package--featured:hover .package-novi { transform: rotate(-4deg) translateY(-6px) scale(1.05); }
+
+.package h3 { font-family: var(--display); font-weight: 700; font-size: 26px; }
+
+.price { margin-top: 12px; font-family: var(--display); font-weight: 800; font-size: 40px; line-height: 1.1; }
+.price span { display: block; font-size: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.6; }
+.price small { font-size: 18px; font-weight: 600; opacity: 0.75; }
+.price--quote { font-size: 30px; padding-top: 20px; }
+
+.package-lead { margin-top: 12px; color: var(--ink-soft); }
+.package--featured .package-lead { color: rgba(255, 255, 255, 0.78); }
+
+.ticks { margin: 22px 0 28px; padding: 0; list-style: none; }
+.ticks li { position: relative; padding: 7px 0 7px 28px; font-size: 15px; }
+.ticks li::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 12px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='%232E2140' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat;
+}
+.package--featured .ticks li::before { background-color: var(--aqua); }
+
+.package .btn { margin-top: auto; }
+.package--featured .btn--line { border-color: var(--white); color: var(--white); }
+
+.addon {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-top: 26px;
+	padding: 20px 24px;
+	border-radius: 16px;
+	background: var(--cream);
+}
+
+.addon-tag { padding: 4px 12px; border-radius: 999px; background: var(--orange); font: 700 12px var(--display); letter-spacing: 0.08em; text-transform: uppercase; }
+.note { margin-top: 18px; font-size: 14px; color: var(--ink-soft); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+	.nav-links { display: none; }
+	.nav-inner { justify-content: space-between; }
+	.hero-grid { grid-template-columns: 1fr; gap: 12px; }
+	.packages { grid-template-columns: 1fr; max-width: 520px; gap: 46px; }
+}
+
+@media (max-width: 600px) {
+	.wrap { padding: 0 20px; }
+	.hero { padding: 40px 0 56px; }
+	.hero-actions .btn { width: 100%; }
+	.stage-video {
+		-webkit-mask-image: radial-gradient(ellipse 62% 64% at 50% 50%, #000 70%, transparent 100%);
+		mask-image: radial-gradient(ellipse 62% 64% at 50% 50%, #000 70%, transparent 100%);
+	}
+	.section { padding: 80px 0; }
+	.package-novi { width: 110px; top: -64px; right: -6px; }
+	.addon { flex-direction: column; align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { animation: none !important; transition: none !important; }
+	html { scroll-behavior: auto; }
+}
