@@ -56,6 +56,169 @@
 	items.forEach(function (el) { io.observe(el); });
 })();
 
+// Problem section: cards ride an ellipse. The active pain sits at the right
+// apex and the orbit loops to the next one on its own; picking a pain jumps
+// there and the loop carries on. Reduced motion swaps cards without the ride.
+(function () {
+	var root = document.querySelector('[data-orbit]');
+	if (!root) { return; }
+	var stage = root.querySelector('[data-orbit-stage]');
+	var cards = [].slice.call(stage.children);
+	var items = [].slice.call(root.querySelectorAll('[data-orbit-item]'));
+	var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	var N = cards.length;
+	var STEP = N / items.length;          // slots between two pains
+	var SLOT = Math.PI * 2 / N;
+	var DWELL = 5200;
+	var TWEEN = 1100;
+	var pos = 0, from = 0, to = 0, tweenStart = 0, tweening = false;
+	var active = 0, elapsed = 0, last = 0, raf = 0;
+	var inView = false, geo;
+
+	function measure() {
+		var w = stage.clientWidth, h = stage.clientHeight;
+		var k = w < 520 ? 0.7 : (w < 760 ? 0.86 : 1.12);
+		var rx = w * 0.78;
+		// Keep the top and bottom cards inside the stage.
+		geo = { k: k, rx: rx, ry: h / 2 - 150 * k * 0.56, cx: w - 240 * k * 0.6 - rx, cy: h / 2 };
+	}
+
+	function render() {
+		cards.forEach(function (card, i) {
+			var a = ((i - pos) * SLOT) % (Math.PI * 2);
+			if (a > Math.PI) { a -= Math.PI * 2; }
+			if (a < -Math.PI) { a += Math.PI * 2; }
+			var c = Math.cos(a);
+			var s = (0.48 + 0.52 * Math.pow((1 + c) / 2, 1.6)) * geo.k;
+			var x = geo.cx + geo.rx * c - 120;
+			var y = geo.cy + geo.ry * Math.sin(a) - 150;
+			var abs = Math.abs(a);
+			var o = abs < 1.75 ? 1 : Math.max(0, 1 - (abs - 1.75) / 0.45);
+			card.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + s.toFixed(3) + ')';
+			card.style.opacity = o.toFixed(2);
+			card.style.zIndex = Math.round(s * 100);
+			card.style.visibility = o > 0 ? 'visible' : 'hidden';
+		});
+	}
+
+	function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+	function select(n) {
+		var L = items.length;
+		var delta = ((n - active) % L + L) % L;
+		if (delta > L / 2) { delta -= L; }
+		active = (n + L) % L;
+		elapsed = 0;
+		from = pos;
+		to += delta * STEP;
+		items.forEach(function (item, i) {
+			var on = i === active;
+			item.classList.toggle('is-active', on);
+			item.style.setProperty('--p', 0);
+			var btn = item.querySelector('button');
+			if (on) { btn.setAttribute('aria-current', 'true'); } else { btn.removeAttribute('aria-current'); }
+		});
+		cards.forEach(function (card, i) { card.classList.toggle('is-active', i === active * STEP); });
+		if (reduced) { pos = to; render(); run(); return; }
+		tweening = true;
+		tweenStart = performance.now();
+		run();
+	}
+
+	function tick(now) {
+		raf = 0;
+		var dt = Math.max(0, Math.min(now - last, 100));
+		last = now;
+		if (tweening) {
+			var t = Math.min((now - tweenStart) / TWEEN, 1);
+			pos = from + (to - from) * ease(t);
+			render();
+			if (t === 1) { tweening = false; }
+		} else {
+			elapsed += dt;
+			items[active].style.setProperty('--p', Math.min(elapsed / DWELL, 1).toFixed(3));
+			if (elapsed >= DWELL) { select(active + 1); }
+		}
+		if (inView) { run(); }
+	}
+
+	function run() {
+		if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+	}
+
+	items.forEach(function (item, i) {
+		item.querySelector('button').addEventListener('click', function () { select(i); });
+	});
+	cards.forEach(function (card, i) {
+		if (i % STEP === 0) { card.addEventListener('click', function () { select(i / STEP); }); }
+	});
+
+	measure();
+	render();
+	cards[0].classList.add('is-active');
+	if (window.ResizeObserver) { new ResizeObserver(function () { measure(); render(); }).observe(stage); }
+	else { window.addEventListener('resize', function () { measure(); render(); }); }
+
+	if ('IntersectionObserver' in window) {
+		new IntersectionObserver(function (entries) {
+			inView = entries[0].isIntersecting;
+			if (inView) { run(); }
+		}, { threshold: 0.35 }).observe(stage);
+	} else { inView = true; run(); }
+})();
+
+// What we do: services orbit the goal. The active one lights up and beams to
+// the sun; the list loops through them like the problem section.
+(function () {
+	var root = document.querySelector('[data-solar]');
+	if (!root) { return; }
+	var bodies = [].slice.call(root.querySelectorAll('[data-solar-body]'));
+	var items = [].slice.call(root.querySelectorAll('[data-solar-item]'));
+	var DWELL = 5200;
+	var active = 0, elapsed = 0, last = 0, raf = 0, inView = false;
+
+	function select(n) {
+		active = (n + items.length) % items.length;
+		elapsed = 0;
+		items.forEach(function (item, i) {
+			var on = i === active;
+			item.classList.toggle('is-active', on);
+			item.style.setProperty('--p', 0);
+			var btn = item.querySelector('button');
+			if (on) { btn.setAttribute('aria-current', 'true'); } else { btn.removeAttribute('aria-current'); }
+		});
+		bodies.forEach(function (body, i) { body.classList.toggle('is-active', i === active); });
+	}
+
+	function tick(now) {
+		raf = 0;
+		elapsed += Math.max(0, Math.min(now - last, 100));
+		last = now;
+		items[active].style.setProperty('--p', Math.min(elapsed / DWELL, 1).toFixed(3));
+		if (elapsed >= DWELL) { select(active + 1); }
+		if (inView) { run(); }
+	}
+
+	function run() {
+		if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+	}
+
+	items.forEach(function (item, i) {
+		item.querySelector('button').addEventListener('click', function () { select(i); });
+	});
+	bodies.forEach(function (body, i) {
+		body.addEventListener('click', function () { select(i); });
+	});
+
+	select(0);
+	if ('IntersectionObserver' in window) {
+		new IntersectionObserver(function (entries) {
+			inView = entries[0].isIntersecting;
+			if (inView) { run(); }
+		}, { threshold: 0.35 }).observe(root);
+	} else { inView = true; run(); }
+})();
+
 // Small looping videos (NOVI idle) play only while on screen.
 (function () {
 	var vids = document.querySelectorAll('video[data-autoplay-inview]');

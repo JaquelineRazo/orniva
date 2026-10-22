@@ -359,54 +359,271 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var
 .section-intro { margin-top: 18px; font-size: 18px; color: var(--ink-soft); max-width: 640px; }
 .section--ink .section-intro { color: rgba(255, 255, 255, 0.75); }
 
-/* ---------- Problem ---------- */
-.split { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 56px; align-items: start; }
+/* ---------- Problem: cards riding an ellipse ----------
+   JS places every card on an ellipse whose right apex sits near the copy;
+   the card at the apex is the problem being read. Fillers pad the orbit. */
+.orbit-section { overflow: hidden; }
+.orbit { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 48px; align-items: center; }
+.orbit > .orbit-copy .eyebrow { justify-self: start; }
 
-.pains { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.orbit-stage { display: none; position: relative; height: 600px; }
+.js .orbit-stage { display: block; }
 
-.pain {
+.orbit-card {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 240px;
+	height: 300px;
+	border-radius: 18px;
+	overflow: hidden;
+	background: var(--white);
+	box-shadow: 0 26px 40px -22px rgba(46, 33, 64, 0.45), 0 2px 6px rgba(46, 33, 64, 0.06);
+	will-change: transform, opacity;
+}
+.orbit-card--pain { cursor: pointer; }
+.orbit-card--f1 { background: radial-gradient(circle at 30% 85%, #FE7730 0, #805CD9 45%, #2E2140 85%); }
+.orbit-card--f2 { background: linear-gradient(160deg, #5BDED8 0%, #805CD9 100%); }
+.orbit-card--f3 { background: radial-gradient(circle at 50% 118%, #FFC49E 0, #FE7730 28%, #2E2140 72%); }
+.orbit-card--f4 { background: radial-gradient(circle at 62% 38%, #FE7730 0 20%, transparent 21%), linear-gradient(180deg, #F9F1E7, #F1DFCF); }
+.orbit-card--f5 { background: conic-gradient(from 210deg at 30% 70%, #2E2140, #805CD9, #5BDED8, #2E2140); }
+.orbit-card--f6 { background: linear-gradient(180deg, #F2E6DE, #F1DFCF); }
+.orbit-card--f6::after {
+	content: '';
+	position: absolute;
+	inset: 34%;
+	background: var(--violet);
+	clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+}
+
+.scene { display: block; width: 240px; height: 230px; }
+.orbit-cap { display: flex; gap: 10px; align-items: baseline; height: 70px; padding: 16px 16px 0; font: 700 15px/1.25 var(--display); color: var(--ink); }
+.orbit-cap span { font-size: 12px; letter-spacing: 0.1em; color: var(--violet-text); }
+
+/* Scene animations only run on the card at the apex. */
+.scene * { animation-play-state: paused; }
+.orbit-card.is-active .scene * { animation-play-state: running; }
+.scene [class^="sc-"] { transform-box: fill-box; }
+
+.sc-stat { font: 500 12px var(--text); fill: var(--ink-soft); }
+.sc-label { font: 700 10px var(--display); letter-spacing: 0.16em; fill: var(--ink-soft); }
+.sc-label--light { fill: rgba(255, 255, 255, 0.85); }
+.sc-big { font: 800 20px var(--display); fill: var(--ink); }
+
+/* 1. Sits there: visitors pass through, the cursor wanders, there is no next step. */
+.sc-q { font: 700 16px var(--display); animation: sc-pulse 1.6s ease-in-out infinite; transform-origin: center; }
+.sc-missing { animation: sc-dash 1.2s linear infinite; }
+.sc-zero { fill: var(--orange); }
+.sc-cursor { animation: sc-wander 6s ease-in-out infinite; }
+.sc-visitors { animation: sc-pass 3.6s linear infinite; }
+@keyframes sc-pulse { 0%, 100% { opacity: 0.4; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.15); } }
+@keyframes sc-dash { to { stroke-dashoffset: -20; } }
+@keyframes sc-wander {
+	0%, 100% { transform: translate(160px, 70px); }
+	25% { transform: translate(62px, 96px); }
+	50% { transform: translate(178px, 132px); }
+	75% { transform: translate(96px, 150px); }
+}
+@keyframes sc-pass { from { transform: translate(-10px, 184px); } to { transform: translate(290px, 184px); } }
+
+/* 2. Leads go cold: inquiries cool from orange to ice while they wait. */
+.sc-heat, .sc-bulb { fill: var(--orange); animation: sc-cool 4.8s ease-in infinite; }
+.sc-row--2 .sc-heat { animation-delay: 0.6s; }
+.sc-row--3 .sc-heat { animation-delay: 1.2s; }
+.sc-age { font: 600 11px var(--text); fill: var(--ink-soft); }
+.sc-temp { fill: var(--orange); transform-origin: bottom; animation: sc-temp 4.8s ease-in infinite; }
+.sc-flakes { animation: sc-fall 5s linear infinite; }
+@keyframes sc-cool { 0%, 10% { fill: #FE7730; } 70%, 100% { fill: #5BDED8; } }
+@keyframes sc-temp { 0%, 10% { transform: scaleY(1); fill: #FE7730; } 70%, 100% { transform: scaleY(0.22); fill: #5BDED8; } }
+@keyframes sc-fall { from { transform: translateY(0); } to { transform: translateY(290px); } }
+
+/* 3. Renting your audience: reach fades in waves and none of it is yours. */
+.sc-crowd circle { animation: sc-reach 3.6s ease-in-out infinite; }
+.sc-crowd circle:nth-child(5n+2) { animation-delay: 0.3s; }
+.sc-crowd circle:nth-child(5n+3) { animation-delay: 0.6s; }
+.sc-crowd circle:nth-child(5n+4) { animation-delay: 0.9s; }
+.sc-crowd circle:nth-child(5n) { animation-delay: 1.2s; }
+.sc-lock { transform-origin: center; animation: sc-shake 3.6s ease-in-out infinite; }
+@keyframes sc-reach { 0%, 100% { opacity: 1; } 50% { opacity: 0.18; } }
+@keyframes sc-shake { 0%, 80%, 100% { transform: rotate(0); } 85% { transform: rotate(-12deg); } 90% { transform: rotate(10deg); } 95% { transform: rotate(-6deg); } }
+
+/* 4. Three vendors: messages leave each tool and die halfway. */
+.sc-node text { font: 700 13px var(--display); fill: var(--ink); }
+.sc-msg { animation: 2.8s ease-in infinite; }
+.sc-msg--1 { animation-name: sc-msg1; }
+.sc-msg--2 { animation-name: sc-msg2; animation-delay: 0.9s; }
+.sc-msg--3 { animation-name: sc-msg3; animation-delay: 1.8s; }
+.sc-break { animation: sc-blink 1.4s ease-in-out infinite; }
+@keyframes sc-msg1 { 0% { transform: translate(116px, 62px); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(84px, 106px); opacity: 0; } }
+@keyframes sc-msg2 { 0% { transform: translate(178px, 156px); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(147px, 106px); opacity: 0; } }
+@keyframes sc-msg3 { 0% { transform: translate(72px, 168px); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(112px, 168px); opacity: 0; } }
+@keyframes sc-blink { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+/* Copy column: every pain stays in the DOM; the active one opens. */
+.orbit-list { list-style: none; margin: 36px 0 0; padding: 0; border-top: 1px solid rgba(46, 33, 64, 0.12); }
+.orbit-item { position: relative; border-bottom: 1px solid rgba(46, 33, 64, 0.12); }
+.orbit-btn {
+	display: flex;
+	gap: 14px;
+	align-items: baseline;
+	width: 100%;
+	padding: 18px 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+.orbit-num { flex: none; width: 22px; font: 600 13px var(--display); letter-spacing: 0.08em; color: var(--violet-text); }
+.orbit-btn h3 { font: 700 19px/1.25 var(--display); color: var(--ink); transition: color 0.3s ease; }
+.js .orbit-item:not(.is-active) .orbit-btn h3 { color: var(--ink-soft); }
+.js .orbit-item:not(.is-active) .orbit-btn:hover h3 { color: var(--ink); }
+.orbit-desc { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.orbit-desc > * { min-height: 0; overflow: hidden; padding-left: 36px; font-size: 15.5px; color: var(--ink-soft); }
+.orbit-desc > *::after { content: ''; display: block; height: 20px; }
+.js .orbit-item:not(.is-active) .orbit-desc { grid-template-rows: 0fr; }
+.orbit-progress {
+	position: absolute;
+	left: 0;
+	bottom: -1px;
+	width: 100%;
+	height: 2px;
+	background: var(--orange);
+	transform: scaleX(var(--p, 0));
+	transform-origin: left;
+}
+.orbit-item:not(.is-active) .orbit-progress { opacity: 0; }
+.orbit-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; font: 600 16px var(--display); color: var(--violet-text); }
+.orbit-link span { transition: transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1); }
+.orbit-link:hover span { transform: translateX(4px); }
+
+/* ---------- What we do: services orbit the goal ----------
+   Each body rides an "arm": a square the size of its orbit that spins, with
+   the body pinned to its top edge and counter-spun so it stays upright. The
+   beam lives on the same arm, so it always points from the body to the sun. */
+.solar-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 64px; align-items: center; margin-top: 48px; }
+.solar-list { margin-top: 0; }
+.solar-list .chips { margin-top: 12px; }
+.solar-list .chips li { background: var(--white); }
+.orbit-tag { flex: none; align-self: center; margin-left: auto; padding: 3px 10px; border-radius: 999px; background: rgba(254, 119, 48, 0.14); color: #A8430F; font: 700 11px var(--display); letter-spacing: 0.08em; text-transform: uppercase; }
+
+.solar { position: relative; width: 100%; max-width: 620px; aspect-ratio: 1; margin: 0 auto; container-type: inline-size; }
+
+.solar-dots {
+	position: absolute;
+	inset: 18%;
+	border-radius: 50%;
+	background: radial-gradient(rgba(46, 33, 64, 0.16) 1px, transparent 1.4px) 0 0 / 9px 9px;
+	-webkit-mask-image: radial-gradient(circle, #000 35%, transparent 72%);
+	mask-image: radial-gradient(circle, #000 35%, transparent 72%);
+}
+
+.solar-rings { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.solar-rings circle { fill: none; stroke: rgba(46, 33, 64, 0.16); stroke-width: 0.25; }
+.solar-rings .is-dashed { stroke-dasharray: 1 1.4; stroke: rgba(46, 33, 64, 0.28); }
+
+.solar-arm {
+	position: absolute;
+	left: calc(50% - var(--r) * 1%);
+	top: calc(50% - var(--r) * 1%);
+	width: calc(var(--r) * 2%);
+	height: calc(var(--r) * 2%);
+	transform: rotate(calc(var(--o) * 360deg));
+	animation: solar-spin var(--t) linear infinite;
+	animation-delay: calc(var(--t) * var(--o) * -1);
+	pointer-events: none;
+}
+.solar-spin { transform: rotate(calc(var(--o) * -360deg)); animation: solar-spin var(--t) linear infinite reverse; animation-delay: calc(var(--t) * var(--o) * -1); }
+.solar:hover .solar-arm, .solar:hover .solar-spin { animation-play-state: paused; }
+@keyframes solar-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+/* Little packets running along the orbits: the system is always moving data. */
+.solar-comet::before {
+	content: '';
+	position: absolute;
+	left: 50%;
+	top: 0;
+	width: 1.4cqw;
+	height: 1.4cqw;
+	border-radius: 50%;
+	background: var(--aqua);
+	box-shadow: 0 0 0 0.8cqw rgba(91, 222, 216, 0.22);
+	transform: translate(-50%, -50%);
+}
+.solar-comet--orange::before { background: var(--orange); box-shadow: 0 0 0 0.8cqw rgba(254, 119, 48, 0.2); }
+
+.solar-beam {
+	position: absolute;
+	left: 50%;
+	top: 0;
+	width: 0.5cqw;
+	height: 50%;
+	transform: translateX(-50%);
+	background: repeating-linear-gradient(180deg, var(--violet) 0 1.2cqw, transparent 1.2cqw 2.4cqw);
+	-webkit-mask-image: linear-gradient(180deg, #000, transparent);
+	mask-image: linear-gradient(180deg, #000, transparent);
+	opacity: 0;
+	transition: opacity 0.5s ease;
+	animation: solar-flow 0.9s linear infinite;
+}
+@keyframes solar-flow { to { background-position: 0 2.4cqw; } }
+
+.solar-body { position: absolute; left: 50%; top: 0; z-index: 2; transform: translate(-50%, -50%); pointer-events: auto; cursor: pointer; }
+.solar-face {
 	position: relative;
-	padding: 26px 24px;
-	border-radius: var(--radius);
-	background: var(--white);
-	border: 2px solid rgba(46, 33, 64, 0.06);
-}
-.pain:nth-child(2) { transition-delay: 0.08s; }
-.pain:nth-child(3) { transition-delay: 0.16s; }
-.pain:nth-child(4) { transition-delay: 0.24s; }
-
-.pain-dot { display: block; width: 12px; height: 12px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 6px rgba(254, 119, 48, 0.15); }
-.pain h3 { margin-top: 16px; font: 700 19px/1.25 var(--display); }
-.pain p { margin-top: 8px; font-size: 15.5px; color: var(--ink-soft); }
-
-/* ---------- What we do ---------- */
-.pillars {
 	display: grid;
-	grid-template-columns: repeat(6, minmax(0, 1fr));
-	gap: 18px;
-	margin-top: 52px;
-}
-
-.pillar {
-	grid-column: span 2;
-	padding: 30px 26px;
-	border-radius: var(--radius);
+	place-items: center;
+	width: 15.5cqw;
+	height: 15.5cqw;
+	border-radius: 50%;
 	background: var(--white);
-	transition: transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 0.4s ease, opacity 0.7s ease;
+	box-shadow: 0 1.6cqw 3cqw -1.4cqw rgba(46, 33, 64, 0.35), inset 0 0 0 1px rgba(46, 33, 64, 0.06);
+	transition: transform 0.5s cubic-bezier(0.3, 1.5, 0.5, 1), background-color 0.4s ease;
 }
-.pillar:nth-child(4), .pillar:nth-child(5) { grid-column: span 3; }
-.pillar:hover { transform: translateY(-5px); box-shadow: 0 26px 46px -32px rgba(46, 33, 64, 0.4); }
+.solar-arm--sat .solar-face { width: 12.5cqw; height: 12.5cqw; background: #FFF8F1; box-shadow: 0 1.2cqw 2.4cqw -1.2cqw rgba(46, 33, 64, 0.3), inset 0 0 0 1.5px rgba(254, 119, 48, 0.45); }
+.solar-face::after { content: ''; position: absolute; top: 9%; right: 9%; width: 1.6cqw; height: 1.6cqw; border-radius: 50%; background: var(--aqua); }
+.solar-arm--sat .solar-face::after { background: var(--orange); }
 
-.pillar--highlight { background: var(--violet); color: var(--white); }
-.pillar--highlight p { color: rgba(255, 255, 255, 0.85) !important; }
-.pillar--highlight .chips li { background: rgba(255, 255, 255, 0.18); color: var(--white); }
-.pillar--highlight .pillar-icon { background: rgba(255, 255, 255, 0.18); }
-.pillar--highlight .pillar-icon svg { stroke: var(--white); }
+.solar-icon { width: 34%; height: 34%; margin-top: -12%; fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.solar-label { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.solar-label text { font: 700 10.5px var(--display); letter-spacing: 1.4px; fill: var(--ink-soft); }
 
-.pillar-icon { display: grid; place-items: center; width: 50px; height: 50px; border-radius: 14px; background: var(--cream); }
-.pillar-icon svg { width: 26px; height: 26px; fill: none; stroke: var(--ink); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.pillar h3 { margin-top: 20px; font: 700 21px/1.2 var(--display); }
-.pillar p { margin-top: 10px; color: var(--ink-soft); }
+.solar-body.is-active .solar-face { transform: scale(1.14); background: var(--violet); }
+.solar-body.is-active .solar-icon { stroke: var(--white); }
+.solar-body.is-active .solar-label text { fill: var(--white); }
+.solar-arm:has(.is-active) { z-index: 3; }
+.solar-arm:has(.is-active) .solar-beam { opacity: 0.8; }
+
+.solar-sun {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	z-index: 4;
+	display: grid;
+	place-items: center;
+	width: 21cqw;
+	height: 21cqw;
+	border-radius: 50%;
+	transform: translate(-50%, -50%);
+	background: radial-gradient(circle at 34% 28%, #FFD9BF 0, #FE7730 42%, #C4521A 78%, #8A3A16 100%);
+	box-shadow: 0 0 0 2.4cqw rgba(254, 119, 48, 0.1), 0 0 0 5cqw rgba(254, 119, 48, 0.05), 0 2cqw 5cqw -1cqw rgba(196, 82, 26, 0.55);
+	animation: solar-glow 4s ease-in-out infinite;
+}
+.solar-sun span { font: 800 3.1cqw/1.05 var(--display); text-align: center; color: var(--ink); letter-spacing: -0.01em; }
+@keyframes solar-glow {
+	0%, 100% { box-shadow: 0 0 0 2.4cqw rgba(254, 119, 48, 0.1), 0 0 0 5cqw rgba(254, 119, 48, 0.05), 0 2cqw 5cqw -1cqw rgba(196, 82, 26, 0.55); }
+	50% { box-shadow: 0 0 0 3.2cqw rgba(254, 119, 48, 0.13), 0 0 0 6.6cqw rgba(254, 119, 48, 0.06), 0 2cqw 5cqw -1cqw rgba(196, 82, 26, 0.55); }
+}
+
+/* Small diagrams: bigger bodies, icons only (the list names them). */
+@container (max-width: 440px) {
+	.solar-face { width: 19cqw; height: 19cqw; }
+	.solar-arm--sat .solar-face { width: 15cqw; height: 15cqw; }
+	.solar-label { display: none; }
+	.solar-icon { width: 42%; height: 42%; margin-top: 0; }
+	.solar-sun span { font-size: 4cqw; }
+}
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 18px 0 0; padding: 0; list-style: none; }
 .chips li { padding: 4px 11px; border-radius: 999px; background: var(--cream); font-size: 12.5px; font-weight: 500; }
@@ -579,9 +796,16 @@ a.work-card:hover .work-shot img { transform: scale(1.04); }
 
 /* ---------- Responsive (O4) ---------- */
 @media (max-width: 1024px) {
-	.split, .content-grid, .faq-grid, .cta-grid { grid-template-columns: 1fr; gap: 36px; }
-	.pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-	.pillar, .pillar:nth-child(4), .pillar:nth-child(5) { grid-column: span 1; }
+	.content-grid, .faq-grid, .cta-grid { grid-template-columns: 1fr; gap: 36px; }
+	.orbit { grid-template-columns: 1fr; gap: 8px; }
+	/* Small screens: heading, then the orbit, then the list. */
+	.orbit-copy { display: contents; }
+	.orbit-copy .eyebrow { order: -3; }
+	.orbit-copy h2 { order: -2; margin-bottom: 8px; }
+	.orbit-list { margin-top: 8px; }
+	.orbit-link { justify-self: start; }
+	.orbit-stage { height: 500px; margin: 16px 0 8px; }
+	.solar-grid { grid-template-columns: 1fr; gap: 40px; }
 	.flow { grid-template-columns: 1fr; }
 	.flow::before { display: none; }
 	.work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -590,7 +814,8 @@ a.work-card:hover .work-shot img { transform: scale(1.04); }
 }
 
 @media (max-width: 600px) {
-	.pains, .pillars, .steps, .field-row { grid-template-columns: 1fr; }
+	.steps, .field-row { grid-template-columns: 1fr; }
+	.orbit-stage { height: 400px; }
 	.work-grid, .work-grid--two { grid-template-columns: 1fr; }
 	.gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 150px; }
 	.tile--wide { grid-column: span 2; }
